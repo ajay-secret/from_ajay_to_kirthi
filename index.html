@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>From Ajay to Kirthi</title>
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Prevent right click
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+
+    // Prevent drag and drop
+    document.addEventListener('dragstart', function(e) {
+      e.preventDefault();
+    });
+
+    // Prevent keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      // Prevent Ctrl+S, Ctrl+U, Ctrl+P, Ctrl+Shift+I
+      if (
+        (e.ctrlKey && (e.key === 's' || e.key === 'u' || e.key === 'p')) ||
+        (e.ctrlKey && e.shiftKey && e.key === 'i')
+      ) {
+        e.preventDefault();
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <!-- Particle container -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Page navigation -->
+  <div class="page-indicators"></div>
+  <div class="page-counter">
+    <span id="currentPage">1</span>/<span id="totalPages">7</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill"></div>
+  </div>
+
+  <!-- Interactive hint overlay -->
+  <div class="hint-overlay">
+    <div class="hint-text"></div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Page transition effect -->
+  <div class="page-transition"></div>
+
+  <!-- Custom cursor -->
+  <div class="custom-cursor"></div>
+
+  <!-- Timestamp -->
+  <div class="timestamp" id="timestamp"></div>
+
+  <!-- Papers -->
+  <div class="paper video-layer">
+    <video id="paperVideo" width="300" height="200" controls>
+        <source src="images/video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+  </div>
+  <div class="paper video-layer">
+    <img src="images/main/7.png" />
+  </div>
+  <div class="paper video-layer">
+    <img src="images/4.png" />
+  </div>
+
+  <div class="paper heart">
+    <img src="images/heart.webp" alt="Heart" />
+  </div>
+  <div class="paper image">
+    <p><img src="images/main/6.png" /></p>
+    
+    <img src="images/photo/3.PNG" />
+  </div>
+  <div class="paper image">
+    <p><img src="images/main/5.png" /></p>
+    <img src="images/photo/2.PNG" />
+  </div>
+  <div class="paper image">
+    <p><img src="images/main/4.png" /></p>
+    <img src="images/photo/1.PNG" />
+  </div>
+  <div class="paper red">
+    <p class="p1"><img src="images/main/3.png" /></p>
+  </div>
+  <div class="paper">
+    <p class="p1"><img src="images/main/2.png" /></p>
+   
+  </div>
+  <div class="paper">
+    <p class="p1"><img src="images/main/1.png" /></p>
+  </div>
+  <!-- Video Play Button -->
+  
+
+
+  <!-- Hidden Video -->
+  <div id="videoContainer" style="display: none;">
+    <video id="backgroundVideo" src="images/video.mp4"></video>
+</div>
+<button id="playVideoBtn">Play Video</button>
+<button id="openBookBtn">
+  <span>Open Book</span>
+</button>
+
+
+  
+  <!-- JavaScript -->
+  <script src="mobile.js"></script>
+  <script>
+    // Particle effect
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + 'vw';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        container.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    // Custom cursor
+    document.addEventListener('mousemove', (e) => {
+      const cursor = document.querySelector('.custom-cursor');
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+
+    document.addEventListener('mousedown', () => {
+      document.querySelector('.custom-cursor').classList.add('active');
+    });
+
+    document.addEventListener('mouseup', () => {
+      document.querySelector('.custom-cursor').classList.remove('active');
+    });
+
+    // Timestamp
+    function updateTimestamp() {
+      const timestamp = document.getElementById('timestamp');
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      timestamp.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+    setInterval(updateTimestamp, 1000);
+    updateTimestamp();
+
+    // Page transition
+    function showPageTransition() {
+      const transition = document.querySelector('.page-transition');
+      transition.classList.add('active');
+      setTimeout(() => {
+        transition.classList.remove('active');
+      }, 300);
+    }
+
+    // Loading overlay
+    function showLoading() {
+      document.querySelector('.loading-overlay').classList.add('active');
+    }
+
+    function hideLoading() {
+      document.querySelector('.loading-overlay').classList.remove('active');
+    }
+
+    // Handle button click with effects
+    document.getElementById('openBookBtn').addEventListener('click', () => {
+      showLoading();
+      showPageTransition();
+      // Simulate loading time
+      setTimeout(hideLoading, 1000);
+    });
+
+    // Page navigation
+    const papers = document.querySelectorAll('.paper');
+    const totalPages = papers.length;
+    const pageIndicators = document.querySelector('.page-indicators');
+    const progressFill = document.querySelector('.progress-fill');
+    
+    // Create page indicators in reverse order
+    for (let i = totalPages - 1; i >= 0; i--) {
+      const dot = document.createElement('div');
+      dot.className = 'page-dot';
+      if (i === totalPages - 1) dot.classList.add('active');
+      pageIndicators.appendChild(dot);
+
+      // Add click handler to each dot
+      dot.addEventListener('click', () => {
+        const targetPaper = papers[totalPages - 1 - i];
+        if (targetPaper) {
+          targetPaper.classList.add('moved');
+          showPageTransition();
+          updateProgress(totalPages - i);
+        }
+      });
+    }
+
+    // Update progress and indicators
+    function updateProgress(currentPage) {
+      const progress = (currentPage / totalPages) * 100;
+      progressFill.style.width = `${progress}%`;
+      document.getElementById('currentPage').textContent = currentPage;
+      
+      // Update indicators (reversed)
+      document.querySelectorAll('.page-dot').forEach((dot, index) => {
+        dot.classList.toggle('active', index === totalPages - currentPage);
+      });
+    }
+
+    // Interactive hints
+    function showHint(text, x, y) {
+      const hint = document.querySelector('.hint-text');
+      hint.textContent = text;
+      hint.style.left = `${x}px`;
+      hint.style.top = `${y}px`;
+      hint.style.opacity = '1';
+      hint.style.transform = 'translateY(0)';
+      document.querySelector('.hint-overlay').classList.add('visible');
+    }
+
+    function hideHint() {
+      const hint = document.querySelector('.hint-text');
+      hint.style.opacity = '0';
+      hint.style.transform = 'translateY(10px)';
+      document.querySelector('.hint-overlay').classList.remove('visible');
+    }
+
+    // Enhanced paper interaction
+    papers.forEach((paper, index) => {
+      paper.addEventListener('mouseenter', () => {
+        showHint('Click and drag to move', 
+          paper.offsetLeft + paper.offsetWidth / 2,
+          paper.offsetTop - 30
+        );
+      });
+
+      paper.addEventListener('mouseleave', hideHint);
+
+      paper.addEventListener('mousedown', () => {
+        updateProgress(totalPages - index);
+      });
+    });
+
+    // Enhanced button interaction
+    const openBookBtn = document.getElementById('openBookBtn');
+    openBookBtn.addEventListener('mouseenter', () => {
+      showHint('Click to open the book', 
+        openBookBtn.offsetLeft + openBookBtn.offsetWidth / 2,
+        openBookBtn.offsetTop - 30
+      );
+    });
+    openBookBtn.addEventListener('mouseleave', hideHint);
+  </script>
+</body>
+</html>
