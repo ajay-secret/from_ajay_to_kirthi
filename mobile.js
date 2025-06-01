@@ -20,23 +20,23 @@ class Paper {
   rotating = false;
   touchStartTime = 0;
   isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  rafId = null;
 
   init(paper) {
+    // Desktop events
     if (!this.isMobile) {
       document.addEventListener('mousemove', (e) => {
-        if (!this.rotating) {
+        if (!this.rotating && this.holdingPaper) {
           this.mouseX = e.clientX;
           this.mouseY = e.clientY;
-          this.velX = this.mouseX - this.prevMouseX;
-          this.velY = this.mouseY - this.prevMouseY;
-        }
-        if (this.holdingPaper) {
-          if (!this.rotating) {
-            this.currentPaperX += this.velX;
-            this.currentPaperY += this.velY;
-          }
+          this.velX = (this.mouseX - this.prevMouseX) * 0.8; // Add resistance
+          this.velY = (this.mouseY - this.prevMouseY) * 0.8;
+          
+          this.currentPaperX += this.velX;
+          this.currentPaperY += this.velY;
           this.prevMouseX = this.mouseX;
           this.prevMouseY = this.mouseY;
+          
           this.updateTransform(paper);
         }
       });
@@ -48,6 +48,8 @@ class Paper {
         this.prevMouseX = e.clientX;
         this.prevMouseY = e.clientY;
         if (e.button === 2) this.rotating = true;
+        
+        paper.classList.add('moved');
       });
 
       window.addEventListener('mouseup', () => {
@@ -56,7 +58,7 @@ class Paper {
       });
     }
 
-    // Touch events with improved handling
+    // Touch events with optimized handling
     paper.addEventListener('touchstart', (e) => {
       if (this.holdingPaper) return;
       e.preventDefault();
@@ -69,6 +71,7 @@ class Paper {
         this.touchStartY = e.touches[0].clientY;
         this.prevTouchX = this.touchStartX;
         this.prevTouchY = this.touchStartY;
+        paper.classList.add('moved');
       }
     });
 
@@ -80,9 +83,9 @@ class Paper {
         this.touchMoveX = e.touches[0].clientX;
         this.touchMoveY = e.touches[0].clientY;
         
-        // Add some resistance to movement
-        this.velX = (this.touchMoveX - this.prevTouchX) * 0.8;
-        this.velY = (this.touchMoveY - this.prevTouchY) * 0.8;
+        // Smoother movement with reduced sensitivity
+        this.velX = (this.touchMoveX - this.prevTouchX) * 0.5;
+        this.velY = (this.touchMoveY - this.prevTouchY) * 0.5;
         
         this.currentPaperX += this.velX;
         this.currentPaperY += this.velY;
@@ -90,41 +93,48 @@ class Paper {
         this.prevTouchX = this.touchMoveX;
         this.prevTouchY = this.touchMoveY;
         
-        this.updateTransform(paper);
-      } else if (e.touches.length === 2) {
-        // Handle pinch-to-zoom or rotation in the future if needed
-        this.rotating = true;
+        // Use requestAnimationFrame for smoother updates
+        if (this.rafId) {
+          cancelAnimationFrame(this.rafId);
+        }
+        this.rafId = requestAnimationFrame(() => {
+          this.updateTransform(paper);
+        });
       }
     }, { passive: false });
 
-    paper.addEventListener('touchend', (e) => {
-      const touchDuration = Date.now() - this.touchStartTime;
-      
-      // Handle tap events (if duration is less than 200ms)
-      if (touchDuration < 200) {
-        // Trigger tap event if needed
-        paper.click();
+    paper.addEventListener('touchend', () => {
+      if (this.rafId) {
+        cancelAnimationFrame(this.rafId);
       }
-      
       this.holdingPaper = false;
       this.rotating = false;
+      this.rafId = null;
     });
   }
 
   updateTransform(paper) {
-    // Limit the movement within viewport bounds
+    // Limit the movement within viewport bounds with padding
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const paperRect = paper.getBoundingClientRect();
+    const padding = 20; // Padding from viewport edges
     
-    this.currentPaperX = Math.max(-paperRect.width/2, Math.min(viewportWidth - paperRect.width/2, this.currentPaperX));
-    this.currentPaperY = Math.max(-paperRect.height/2, Math.min(viewportHeight - paperRect.height/2, this.currentPaperY));
+    this.currentPaperX = Math.max(
+      -paperRect.width + padding,
+      Math.min(viewportWidth - padding, this.currentPaperX)
+    );
+    this.currentPaperY = Math.max(
+      -paperRect.height + padding,
+      Math.min(viewportHeight - padding, this.currentPaperY)
+    );
     
-    paper.style.transform = `translate(${this.currentPaperX}px, ${this.currentPaperY}px) rotate(${this.rotation}deg)`;
+    // Use transform3d for better performance
+    paper.style.transform = `translate3d(${this.currentPaperX}px, ${this.currentPaperY}px, 0) rotate(${this.rotation}deg)`;
   }
 }
 
-// Initialize papers
+// Initialize papers with optimized event handling
 document.addEventListener("DOMContentLoaded", () => {
   const papers = document.querySelectorAll('.paper');
   papers.forEach(paper => new Paper().init(paper));
@@ -132,11 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Prevent default touch behavior on mobile
   if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
     document.body.style.overscrollBehavior = 'none';
-    document.addEventListener('touchmove', (e) => {
-      if (e.touches.length > 1) {
-        e.preventDefault();
-      }
-    }, { passive: false });
+    document.body.style.touchAction = 'none';
   }
 });
 
