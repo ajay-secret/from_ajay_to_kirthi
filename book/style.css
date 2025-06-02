@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Lora&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Caveat&display=swap");
 * {
   margin: 0;
   box-sizing: border-box;
@@ -30,17 +30,13 @@ body {
 }
 
 .page {
-  width: 45vw;
-  height: 70vh;
+  width: 423.5px;
+  height: 654.5px;
   background: #eee;
   position: absolute;
   top: 0;
   right: 0;
   transition: transform 1s;
-  font-family: 'Caveat', cursive;
-  font-size: 22px;
-  line-height: 1.4;
-  font-weight: 500;
 }
 
 .page:nth-child(1) {
@@ -1212,7 +1208,7 @@ body {
 .page:nth-child(107) {
   padding: 5% 4% 4% 5%;
   transform-origin: 0% 50%;
-  transform: translatez(-107px) ;
+  transform: translatez(-107px);
   background: #ccc;
 }
 
@@ -1234,7 +1230,7 @@ body {
 .page:nth-child(109) {
   padding: 5% 4% 4% 5%;
   transform-origin: 0% 50%;
-  transform: translatez(-109px) ;
+  transform: translatez(-109px);
   background: #ccc;
 }
 
@@ -1256,7 +1252,7 @@ body {
 .page:nth-child(111) {
   padding: 5% 4% 4% 5%;
   transform-origin: 0% 50%;
-  transform: translatez(-111px) ;
+  transform: translatez(-111px);
   background: #ccc;
 }
 
@@ -1278,7 +1274,7 @@ body {
 .page:nth-child(113) {
   padding: 5% 4% 4% 5%;
   transform-origin: 0% 50%;
-  transform: translatez(-113px) ;
+  transform: translatez(-113px);
   background: #ccc;
 }
 
@@ -1301,7 +1297,6 @@ body {
   text-align: center;
   background: linear-gradient(#afd2dd, #a1d5e5) 50% 50%/80% 86% no-repeat, linear-gradient(#ffffff, #ffffff) 50% 50%/90% 93% no-repeat, linear-gradient(#9bc8d6, #9bc8d6) no-repeat;
 }
-
 .cover-front:nth-child(1) h1 {
   font-family: "Lora", serif;
   font-size: 45px;
@@ -1309,7 +1304,6 @@ body {
   margin-top: 30px;
   text-transform: uppercase;
 }
-
 .cover-front:nth-child(1) h2 {
   font-family: "EB Garamond", serif;
   font-size: 24px;
@@ -1317,7 +1311,6 @@ body {
   position: relative;
   top: 40%;
 }
-
 .cover-front:nth-child(1) .hat {
   font-size: 100px;
   color: #134a78;
@@ -1328,13 +1321,11 @@ body {
 p {
   margin-bottom: 4%;
   font-family: 'Caveat', cursive;
-  font-size: 22px;
-  line-height: 1.4;
+  font-size: 16px;
 }
 
 .page:nth-child(3) p:first-of-type:first-letter {
-  font-size: 42px;
-  font-weight: 600;
+  font-size: 32px;
 }
 
 .instruction {
@@ -1373,29 +1364,10 @@ p {
   .page {
     width: 45vw;
     height: 70vh;
-    font-size: clamp(18px, 3vw, 22px);
-  }
-
-  p {
-    font-size: clamp(18px, 3vw, 22px);
-    line-height: 1.4;
-    margin-bottom: 0.8em;
   }
 
   .page img {
     width: 100%;
     height: auto;
-  }
-}
-
-@media (max-width: 600px) {
-  .page {
-    font-size: clamp(16px, 2.8vw, 20px);
-  }
-  
-  p {
-    font-size: clamp(16px, 2.8vw, 20px);
-    line-height: 1.3;
-    margin-bottom: 0.6em;
   }
 }
