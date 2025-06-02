@@ -59,7 +59,11 @@ class Paper {
       });
     } else {
       const touchStart = (e) => {
-        e.preventDefault();
+        // Only prevent default for non-input elements
+        if (!e.target.matches('input, textarea, select, button')) {
+          e.preventDefault();
+        }
+        
         if (this.holdingPaper) return;
         
         const touch = e.touches[0];
@@ -67,6 +71,7 @@ class Paper {
         const now = Date.now();
         
         if (now - this.lastTouchTime < 300) {
+          // Reset position on double tap
           this.currentPaperX = 0;
           this.currentPaperY = 0;
           this.updateTransform(paper);
@@ -85,12 +90,17 @@ class Paper {
         this.prevTouchX = this.touchStartX;
         this.prevTouchY = this.touchStartY;
         
+        // Remove transition during touch
         paper.style.transition = 'none';
         paper.classList.add('moved');
       };
 
       const touchMove = (e) => {
-        e.preventDefault();
+        // Only prevent default for the paper element
+        if (e.target === paper) {
+          e.preventDefault();
+        }
+        
         if (!this.holdingPaper) return;
         
         const touch = Array.from(e.touches).find(t => t.identifier === this.touchId);
@@ -99,8 +109,9 @@ class Paper {
         this.touchMoveX = touch.clientX;
         this.touchMoveY = touch.clientY;
         
-        this.velX = (this.touchMoveX - this.prevTouchX) * 1.2;
-        this.velY = (this.touchMoveY - this.prevTouchY) * 1.2;
+        // Reduce velocity multiplier for smoother movement
+        this.velX = (this.touchMoveX - this.prevTouchX) * 1.0;
+        this.velY = (this.touchMoveY - this.prevTouchY) * 1.0;
         
         this.currentPaperX += this.velX;
         this.currentPaperY += this.velY;
@@ -108,9 +119,13 @@ class Paper {
         this.prevTouchX = this.touchMoveX;
         this.prevTouchY = this.touchMoveY;
         
-        requestAnimationFrame(() => {
-          this.updateTransform(paper);
-        });
+        // Use RAF for smooth animation
+        if (!this.rafId) {
+          this.rafId = requestAnimationFrame(() => {
+            this.updateTransform(paper);
+            this.rafId = null;
+          });
+        }
       };
 
       const touchEnd = (e) => {
