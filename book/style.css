@@ -1455,10 +1455,26 @@ p {
     transform: none !important;
   }
 
+  .cover-front:nth-child(1) {
+    text-align: center;
+    background: linear-gradient(#afd2dd, #a1d5e5) 50% 50%/80% 86% no-repeat, 
+                linear-gradient(#ffffff, #ffffff) 50% 50%/90% 93% no-repeat, 
+                linear-gradient(#9bc8d6, #9bc8d6) no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px;
+  }
+
   .cover-front:nth-child(1) img {
-    width: 100% !important;
-    height: 100% !important;
+    width: 85% !important;
+    height: 70% !important;
     object-fit: fill !important;
+    margin: 10% auto !important;
+    display: block;
+    position: relative;
+    z-index: 1;
   }
 
   p {
@@ -1489,7 +1505,7 @@ p {
 
   .page-counter {
     position: fixed;
-    bottom: 1vh;
+    bottom: 15vh;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(255, 255, 255, 0.9);
@@ -1528,8 +1544,18 @@ p {
     margin-bottom: 0.6em;
   }
 
+  .cover-front:nth-child(1) {
+    padding: 15px;
+  }
+
+  .cover-front:nth-child(1) img {
+    width: 88% !important;
+    height: 75% !important;
+    margin: 8% auto !important;
+  }
+
   .page-counter {
-    bottom: 0.5vh;
+    bottom: 12vh;
     padding: 4px 12px;
     font-size: clamp(10px, 2.2vw, 12px);
   }
