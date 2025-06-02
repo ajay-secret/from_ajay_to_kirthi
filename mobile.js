@@ -2,25 +2,12 @@ let highestZ = 1;
 
 class Paper {
   holdingPaper = false;
-  touchStartX = 0;
-  touchStartY = 0;
-  initialX = 0;
-  initialY = 0;
-  currentX = 0;
-  currentY = 0;
+  startX = 0;
+  startY = 0;
+  offsetX = 0;
+  offsetY = 0;
   isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  lastTouchTime = 0;
   touchId = null;
-  
-  constructor(paper) {
-    // Store initial transform
-    const style = window.getComputedStyle(paper);
-    const transform = new DOMMatrix(style.transform);
-    this.initialX = transform.m41;
-    this.initialY = transform.m42;
-    this.currentX = this.initialX;
-    this.currentY = this.initialY;
-  }
   
   init(paper) {
     if (!this.isMobile) {
@@ -31,15 +18,14 @@ class Paper {
         this.holdingPaper = true;
         paper.style.zIndex = highestZ++;
         
-        // Get current transform values
-        const style = window.getComputedStyle(paper);
-        const transform = new DOMMatrix(style.transform);
-        this.initialX = transform.m41;
-        this.initialY = transform.m42;
+        // Calculate offset from mouse position to paper's top-left corner
+        const rect = paper.getBoundingClientRect();
+        this.offsetX = e.clientX - rect.left;
+        this.offsetY = e.clientY - rect.top;
         
-        // Store initial mouse position
-        this.touchStartX = e.clientX;
-        this.touchStartY = e.clientY;
+        // Store initial position
+        this.startX = e.clientX;
+        this.startY = e.clientY;
         
         paper.classList.add('moved');
         paper.style.transition = 'none';
@@ -48,13 +34,9 @@ class Paper {
       const mouseMove = (e) => {
         if (!this.holdingPaper) return;
         
-        // Calculate the exact position based on mouse movement
-        const dx = e.clientX - this.touchStartX;
-        const dy = e.clientY - this.touchStartY;
-        
-        // Apply the transform
-        const x = this.initialX + dx;
-        const y = this.initialY + dy;
+        // Calculate new position based on cursor position and offset
+        const x = e.clientX - this.offsetX;
+        const y = e.clientY - this.offsetY;
         
         // Apply boundaries
         const viewportWidth = window.innerWidth;
@@ -62,23 +44,21 @@ class Paper {
         const paperRect = paper.getBoundingClientRect();
         const padding = 20;
         
-        this.currentX = Math.max(-paperRect.width/2 + padding, 
-                              Math.min(viewportWidth - paperRect.width/2 - padding, x));
-        this.currentY = Math.max(padding, 
+        const boundedX = Math.max(padding, 
+                              Math.min(viewportWidth - paperRect.width - padding, x));
+        const boundedY = Math.max(padding, 
                               Math.min(viewportHeight - paperRect.height - padding, y));
         
-        // Preserve the initial transform and add our translation
-        const baseTransform = window.getComputedStyle(paper).transform;
-        const initialTransform = baseTransform === 'none' || baseTransform.includes('matrix(1, 0, 0, 1') ? '' : baseTransform;
-        paper.style.transform = `${initialTransform} translate3d(${this.currentX}px, ${this.currentY}px, 0)`;
+        // Set the new position directly
+        paper.style.position = 'absolute';
+        paper.style.left = boundedX + 'px';
+        paper.style.top = boundedY + 'px';
       };
 
       const mouseEnd = () => {
         if (!this.holdingPaper) return;
         this.holdingPaper = false;
-        this.initialX = this.currentX;
-        this.initialY = this.currentY;
-        paper.style.transition = 'transform 0.2s ease-out';
+        paper.style.transition = 'all 0.2s ease-out';
       };
 
       paper.addEventListener('mousedown', mouseStart);
@@ -96,13 +76,14 @@ class Paper {
         const touch = e.touches[0];
         this.touchId = touch.identifier;
         
-        this.touchStartX = touch.clientX;
-        this.touchStartY = touch.clientY;
+        // Calculate offset from touch position to paper's top-left corner
+        const rect = paper.getBoundingClientRect();
+        this.offsetX = touch.clientX - rect.left;
+        this.offsetY = touch.clientY - rect.top;
         
-        const style = window.getComputedStyle(paper);
-        const transform = new DOMMatrix(style.transform);
-        this.initialX = transform.m41;
-        this.initialY = transform.m42;
+        // Store initial position
+        this.startX = touch.clientX;
+        this.startY = touch.clientY;
         
         this.holdingPaper = true;
         paper.style.zIndex = highestZ++;
@@ -120,33 +101,32 @@ class Paper {
         const touch = Array.from(e.touches).find(t => t.identifier === this.touchId);
         if (!touch) return;
         
-        const dx = touch.clientX - this.touchStartX;
-        const dy = touch.clientY - this.touchStartY;
+        // Calculate new position based on touch position and offset
+        const x = touch.clientX - this.offsetX;
+        const y = touch.clientY - this.offsetY;
         
-        const x = this.initialX + dx;
-        const y = this.initialY + dy;
-        
+        // Apply boundaries
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
         const paperRect = paper.getBoundingClientRect();
         const padding = 10;
         
-        const boundedX = Math.max(-paperRect.width/2 + padding, 
-                                Math.min(viewportWidth - paperRect.width/2 - padding, x));
+        const boundedX = Math.max(padding, 
+                              Math.min(viewportWidth - paperRect.width - padding, x));
         const boundedY = Math.max(padding, 
-                                Math.min(viewportHeight - paperRect.height - padding, y));
+                              Math.min(viewportHeight - paperRect.height - padding, y));
         
-        // Preserve the initial transform and add our translation
-        const baseTransform = window.getComputedStyle(paper).transform;
-        const initialTransform = baseTransform === 'none' || baseTransform.includes('matrix(1, 0, 0, 1') ? '' : baseTransform;
-        paper.style.transform = `${initialTransform} translate3d(${boundedX}px, ${boundedY}px, 0)`;
+        // Set the new position directly
+        paper.style.position = 'absolute';
+        paper.style.left = boundedX + 'px';
+        paper.style.top = boundedY + 'px';
       };
 
       const touchEnd = () => {
         if (!this.holdingPaper) return;
         this.holdingPaper = false;
         this.touchId = null;
-        paper.style.transition = 'transform 0.2s ease-out';
+        paper.style.transition = 'all 0.2s ease-out';
       };
 
       paper.addEventListener('touchstart', touchStart, { passive: false });
@@ -155,46 +135,20 @@ class Paper {
       paper.addEventListener('touchcancel', touchEnd, { passive: true });
     }
   }
-
-  updateTransform(paper) {
-    if (!paper) return;
-    
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const paperRect = paper.getBoundingClientRect();
-    const padding = this.isMobile ? 10 : 20;
-    
-    // Calculate boundaries with initial position offset
-    const initialLeft = paperRect.width / 2;
-    const maxX = viewportWidth - paperRect.width + initialLeft - padding;
-    const minX = -initialLeft + padding;
-    
-    this.currentPaperX = Math.max(
-      minX,
-      Math.min(maxX, this.currentPaperX)
-    );
-    this.currentPaperY = Math.max(
-      padding,
-      Math.min(viewportHeight - paperRect.height - padding, this.currentPaperY)
-    );
-    
-    // Apply transform without interfering with initial position
-    const baseTransform = window.getComputedStyle(paper).transform;
-    const initialTransform = baseTransform === 'none' ? '' : baseTransform;
-    
-    paper.style.transform = `${initialTransform} translate3d(${this.currentPaperX}px, ${this.currentPaperY}px, 0)`;
-  }
 }
 
-// Initialize papers with separate instances
+// Initialize papers
 document.addEventListener("DOMContentLoaded", () => {
   const papers = document.querySelectorAll('.paper');
   
   papers.forEach(paper => {
-    // Create a new Paper instance for each paper
-    const paperHandler = new Paper(paper);
-    paper.style.willChange = 'transform';
-    paperHandler.init(paper);
+    // Set initial styles
+    paper.style.position = 'absolute';
+    paper.style.margin = '0';
+    paper.style.willChange = 'left, top';
+    
+    // Initialize paper handler
+    new Paper().init(paper);
   });
   
   if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
