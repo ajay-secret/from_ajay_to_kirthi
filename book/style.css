@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Lora&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Caveat&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap");
 * {
   margin: 0;
   box-sizing: border-box;
@@ -1208,7 +1208,7 @@ body {
 .page:nth-child(107) {
   padding: 5% 4% 4% 5%;
   transform-origin: 0% 50%;
-  transform: translatez(-107px);
+  transform: translatez(-107px) ;
   background: #ccc;
 }
 
@@ -1219,47 +1219,25 @@ body {
 .page:nth-child(108) {
   padding: 5% 5% 4% 4%;
   transform-origin: 100% 50%;
-  transform: translatez(-108px) scalex(-1) translatex(100%);
-  background: #ccc;
-}
-
-.left-side:nth-child(108) {
-  transform: translatez(108px) scalex(-1) translatex(100%) rotatey(180deg);
-}
-
-.page:nth-child(109) {
-  padding: 5% 4% 4% 5%;
-  transform-origin: 0% 50%;
-  transform: translatez(-109px);
-  background: #ccc;
-}
-
-.left-side:nth-child(109) {
-  transform: translatez(109px) rotatey(-180deg);
-}
-
-.page:nth-child(110) {
-  padding: 5% 5% 4% 4%;
-  transform-origin: 100% 50%;
   transform: translatez(-110px) scalex(-1) translatex(100%);
   background: #ccc;
 }
 
+
 .left-side:nth-child(110) {
   transform: translatez(110px) scalex(-1) translatex(100%) rotatey(180deg);
-}
 
-.page:nth-child(111) {
+
+}.page:nth-child(111) {
   padding: 5% 4% 4% 5%;
   transform-origin: 0% 50%;
-  transform: translatez(-111px);
+  transform: translatez(-111px) ;
   background: #ccc;
 }
 
 .left-side:nth-child(111) {
   transform: translatez(111px) rotatey(-180deg);
 }
-
 .page:nth-child(112) {
   padding: 5% 5% 4% 4%;
   transform-origin: 100% 50%;
@@ -1269,19 +1247,15 @@ body {
 
 .left-side:nth-child(112) {
   transform: translatez(112px) scalex(-1) translatex(100%) rotatey(180deg);
-}
-
-.page:nth-child(113) {
+}.page:nth-child(113) {
   padding: 5% 4% 4% 5%;
   transform-origin: 0% 50%;
-  transform: translatez(-113px);
+  transform: translatez(-113px) ;
   background: #ccc;
 }
 
 .left-side:nth-child(113) {
-  transform: translatez(113px) rotatey(-180deg);
-}
-
+  transform: translatez(113px) rotatey(-180deg);}
 .page:nth-child(114) {
   padding: 5% 5% 4% 4%;
   transform-origin: 100% 50%;
@@ -1318,14 +1292,17 @@ body {
   top: 3%;
 }
 
-p {
+.page p {
   margin-bottom: 4%;
   font-family: 'Caveat', cursive;
-  font-size: 16px;
+  font-weight: 500;
+  font-size: 18px;
 }
 
 .page:nth-child(3) p:first-of-type:first-letter {
-  font-size: 32px;
+  font-size: 36px;
+  font-family: 'Caveat', cursive;
+  font-weight: 500;
 }
 
 .instruction {
@@ -1337,15 +1314,13 @@ p {
   border-radius: 15px;
   padding: 10px 15px;
 }
-
 .page img {
   width: 100%;
   height: 575px;
-  width: 400px;
+  width: 400px
   display: block;
   margin: auto;
 }
-
 @media (max-width: 900px) {
   body {
     min-width: auto;
