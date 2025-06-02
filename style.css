@@ -973,11 +973,6 @@ p {
     touch-action: none;
     height: 100vh;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    position: relative;
   }
 
   /* Hide unnecessary elements on mobile */
@@ -990,39 +985,31 @@ p {
     display: none !important;
   }
 
-  /* Container for papers */
-  .papers-container {
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px 0 100px 0;
-    box-sizing: border-box;
-    width: 100%;
-    position: relative;
-  }
-
   .paper {
-    position: relative !important;
+    position: absolute;
     width: 85vw;
     max-width: 300px;
-    margin: 10px auto;
-    transform: none !important;
+    margin: 0 auto;
     will-change: transform;
     -webkit-transform: translateZ(0);
     -moz-transform: translateZ(0);
     -ms-transform: translateZ(0);
     -o-transform: translateZ(0);
     transform: translateZ(0);
-    top: auto !important;
-    left: auto !important;
   }
+
+  /* Initial positions for papers */
+  .paper:nth-child(1) { top: 5%; left: 50%; transform: translateX(-50%) !important; }
+  .paper:nth-child(2) { top: 15%; left: 50%; transform: translateX(-50%) !important; }
+  .paper:nth-child(3) { top: 25%; left: 50%; transform: translateX(-50%) !important; }
+  .paper:nth-child(4) { top: 35%; left: 50%; transform: translateX(-50%) !important; }
+  .paper:nth-child(5) { top: 45%; left: 50%; transform: translateX(-50%) !important; }
+  .paper:nth-child(6) { top: 55%; left: 50%; transform: translateX(-50%) !important; }
+  .paper:nth-child(7) { top: 65%; left: 50%; transform: translateX(-50%) !important; }
 
   .paper.heart {
     width: 120px;
     height: 120px;
-    margin: 20px auto;
   }
 
   .paper video {
@@ -1066,12 +1053,9 @@ p {
   }
 
   .video-layer {
-    position: relative !important;
+    position: absolute;
     width: 85vw;
     max-width: 300px;
-    margin: 10px auto;
-    top: auto !important;
-    left: auto !important;
   }
 
   .paper::before {
@@ -1094,7 +1078,6 @@ p {
   .paper {
     width: 90vw;
     padding: 10px;
-    margin: 8px auto;
   }
 
   #openBookBtn {
@@ -1108,11 +1091,7 @@ p {
 /* Fix for iOS Safari bottom bar */
 @supports (-webkit-touch-callout: none) {
   body {
-    min-height: -webkit-fill-available;
-  }
-
-  .papers-container {
-    min-height: -webkit-fill-available;
+    height: -webkit-fill-available;
   }
   
   #openBookBtn {
