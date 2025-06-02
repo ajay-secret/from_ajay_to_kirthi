@@ -23,6 +23,7 @@ class Paper {
   rafId = null;
   initialTouchDistance = 0;
   lastTouchTime = 0;
+  touchId = null;
   
   init(paper) {
     if (!this.isMobile) {
@@ -57,11 +58,12 @@ class Paper {
         this.rotating = false;
       });
     } else {
-      paper.addEventListener('touchstart', (e) => {
+      const touchStart = (e) => {
         e.preventDefault();
         if (this.holdingPaper) return;
         
         const touch = e.touches[0];
+        this.touchId = touch.identifier;
         const now = Date.now();
         
         if (now - this.lastTouchTime < 300) {
@@ -85,19 +87,20 @@ class Paper {
         
         paper.style.transition = 'none';
         paper.classList.add('moved');
-      }, { passive: false });
+      };
 
-      paper.addEventListener('touchmove', (e) => {
+      const touchMove = (e) => {
         e.preventDefault();
         if (!this.holdingPaper) return;
         
-        const touch = e.touches[0];
+        const touch = Array.from(e.touches).find(t => t.identifier === this.touchId);
+        if (!touch) return;
         
         this.touchMoveX = touch.clientX;
         this.touchMoveY = touch.clientY;
         
-        this.velX = this.touchMoveX - this.prevTouchX;
-        this.velY = this.touchMoveY - this.prevTouchY;
+        this.velX = (this.touchMoveX - this.prevTouchX) * 1.2;
+        this.velY = (this.touchMoveY - this.prevTouchY) * 1.2;
         
         this.currentPaperX += this.velX;
         this.currentPaperY += this.velY;
@@ -108,31 +111,33 @@ class Paper {
         requestAnimationFrame(() => {
           this.updateTransform(paper);
         });
-      }, { passive: false });
+      };
 
-      document.addEventListener('touchend', () => {
-        if (this.holdingPaper) {
+      const touchEnd = (e) => {
+        if (!this.holdingPaper) return;
+        
+        const touches = Array.from(e.touches);
+        if (!touches.some(t => t.identifier === this.touchId)) {
           this.holdingPaper = false;
-          this.rotating = false;
+          this.touchId = null;
           paper.style.transition = 'transform 0.2s ease-out';
         }
-      }, { passive: false });
+      };
 
-      document.addEventListener('touchcancel', () => {
-        if (this.holdingPaper) {
-          this.holdingPaper = false;
-          this.rotating = false;
-          paper.style.transition = 'transform 0.2s ease-out';
-        }
-      }, { passive: false });
+      paper.addEventListener('touchstart', touchStart, { passive: false });
+      paper.addEventListener('touchmove', touchMove, { passive: false });
+      document.addEventListener('touchend', touchEnd, { passive: true });
+      document.addEventListener('touchcancel', touchEnd, { passive: true });
     }
   }
 
   updateTransform(paper) {
+    if (!paper) return;
+    
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const paperRect = paper.getBoundingClientRect();
-    const padding = 20;
+    const padding = this.isMobile ? 10 : 20;
     
     this.currentPaperX = Math.max(
       -paperRect.width + padding,
@@ -143,7 +148,8 @@ class Paper {
       Math.min(viewportHeight - padding, this.currentPaperY)
     );
     
-    paper.style.transform = `translate3d(${this.currentPaperX}px, ${this.currentPaperY}px, 0)`;
+    const transform = `translate3d(${this.currentPaperX}px, ${this.currentPaperY}px, 0)`;
+    paper.style.transform = transform;
   }
 }
 
@@ -159,9 +165,18 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.style.overscrollBehavior = 'none';
     document.body.style.touchAction = 'none';
     
-    // Prevent default touch behaviors
+    // Prevent zoom on double tap
+    document.addEventListener('touchstart', (e) => {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+    
+    // Prevent default touch behaviors except for inputs
     document.addEventListener('touchmove', (e) => {
-      if (e.touches.length > 1) e.preventDefault();
+      if (!e.target.matches('input, textarea')) {
+        e.preventDefault();
+      }
     }, { passive: false });
   }
 });
