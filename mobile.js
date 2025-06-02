@@ -6,39 +6,76 @@ class Paper {
   touchStartY = 0;
   initialX = 0;
   initialY = 0;
+  currentX = 0;
+  currentY = 0;
   isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   lastTouchTime = 0;
   touchId = null;
   
   init(paper) {
     if (!this.isMobile) {
-      document.addEventListener('mousemove', (e) => {
-        if (!this.rotating && this.holdingPaper) {
-          const dx = e.clientX - this.prevMouseX;
-          const dy = e.clientY - this.prevMouseY;
-          
-          this.currentPaperX += dx;
-          this.currentPaperY += dy;
-          this.prevMouseX = e.clientX;
-          this.prevMouseY = e.clientY;
-          
-          this.updateTransform(paper);
-        }
-      });
-
-      paper.addEventListener('mousedown', (e) => {
+      // Desktop handling
+      const mouseStart = (e) => {
         if (this.holdingPaper) return;
+        
         this.holdingPaper = true;
         paper.style.zIndex = highestZ++;
-        this.prevMouseX = e.clientX;
-        this.prevMouseY = e.clientY;
+        
+        // Get current transform values
+        const style = window.getComputedStyle(paper);
+        const transform = new DOMMatrix(style.transform);
+        this.initialX = transform.m41;
+        this.initialY = transform.m42;
+        
+        this.currentX = this.initialX;
+        this.currentY = this.initialY;
+        
+        // Store initial mouse position
+        this.touchStartX = e.clientX;
+        this.touchStartY = e.clientY;
+        
         paper.classList.add('moved');
-      });
+        paper.style.transition = 'none';
+      };
 
-      window.addEventListener('mouseup', () => {
+      const mouseMove = (e) => {
+        if (!this.holdingPaper) return;
+        
+        // Calculate the exact position based on mouse movement
+        const dx = e.clientX - this.touchStartX;
+        const dy = e.clientY - this.touchStartY;
+        
+        // Apply the transform
+        const x = this.initialX + dx;
+        const y = this.initialY + dy;
+        
+        // Apply boundaries
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const paperRect = paper.getBoundingClientRect();
+        const padding = 20;
+        
+        this.currentX = Math.max(-paperRect.width/2 + padding, 
+                              Math.min(viewportWidth - paperRect.width/2 - padding, x));
+        this.currentY = Math.max(padding, 
+                              Math.min(viewportHeight - paperRect.height - padding, y));
+        
+        paper.style.transform = `translate3d(${this.currentX}px, ${this.currentY}px, 0)`;
+      };
+
+      const mouseEnd = () => {
+        if (!this.holdingPaper) return;
         this.holdingPaper = false;
-      });
+        this.initialX = this.currentX;
+        this.initialY = this.currentY;
+        paper.style.transition = 'transform 0.2s ease-out';
+      };
+
+      paper.addEventListener('mousedown', mouseStart);
+      document.addEventListener('mousemove', mouseMove);
+      document.addEventListener('mouseup', mouseEnd);
     } else {
+      // Mobile touch handling (keep existing optimized code)
       const touchStart = (e) => {
         if (!e.target.matches('input, textarea, select, button')) {
           e.preventDefault();
