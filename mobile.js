@@ -12,6 +12,16 @@ class Paper {
   lastTouchTime = 0;
   touchId = null;
   
+  constructor(paper) {
+    // Store initial transform
+    const style = window.getComputedStyle(paper);
+    const transform = new DOMMatrix(style.transform);
+    this.initialX = transform.m41;
+    this.initialY = transform.m42;
+    this.currentX = this.initialX;
+    this.currentY = this.initialY;
+  }
+  
   init(paper) {
     if (!this.isMobile) {
       // Desktop handling
@@ -26,9 +36,6 @@ class Paper {
         const transform = new DOMMatrix(style.transform);
         this.initialX = transform.m41;
         this.initialY = transform.m42;
-        
-        this.currentX = this.initialX;
-        this.currentY = this.initialY;
         
         // Store initial mouse position
         this.touchStartX = e.clientX;
@@ -60,7 +67,10 @@ class Paper {
         this.currentY = Math.max(padding, 
                               Math.min(viewportHeight - paperRect.height - padding, y));
         
-        paper.style.transform = `translate3d(${this.currentX}px, ${this.currentY}px, 0)`;
+        // Preserve the initial transform and add our translation
+        const baseTransform = window.getComputedStyle(paper).transform;
+        const initialTransform = baseTransform === 'none' || baseTransform.includes('matrix(1, 0, 0, 1') ? '' : baseTransform;
+        paper.style.transform = `${initialTransform} translate3d(${this.currentX}px, ${this.currentY}px, 0)`;
       };
 
       const mouseEnd = () => {
@@ -75,7 +85,7 @@ class Paper {
       document.addEventListener('mousemove', mouseMove);
       document.addEventListener('mouseup', mouseEnd);
     } else {
-      // Mobile touch handling (keep existing optimized code)
+      // Mobile touch handling
       const touchStart = (e) => {
         if (!e.target.matches('input, textarea, select, button')) {
           e.preventDefault();
@@ -126,7 +136,10 @@ class Paper {
         const boundedY = Math.max(padding, 
                                 Math.min(viewportHeight - paperRect.height - padding, y));
         
-        paper.style.transform = `translate3d(${boundedX}px, ${boundedY}px, 0)`;
+        // Preserve the initial transform and add our translation
+        const baseTransform = window.getComputedStyle(paper).transform;
+        const initialTransform = baseTransform === 'none' || baseTransform.includes('matrix(1, 0, 0, 1') ? '' : baseTransform;
+        paper.style.transform = `${initialTransform} translate3d(${boundedX}px, ${boundedY}px, 0)`;
       };
 
       const touchEnd = () => {
@@ -173,15 +186,13 @@ class Paper {
   }
 }
 
-// Initialize papers with optimized event handling
+// Initialize papers with separate instances
 document.addEventListener("DOMContentLoaded", () => {
   const papers = document.querySelectorAll('.paper');
   
-  // Use a single instance for all papers to save memory
-  const paperHandler = new Paper();
-  
   papers.forEach(paper => {
-    // Only set essential styles
+    // Create a new Paper instance for each paper
+    const paperHandler = new Paper(paper);
     paper.style.willChange = 'transform';
     paperHandler.init(paper);
   });
