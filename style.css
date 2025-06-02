@@ -974,6 +974,8 @@ p {
     touch-action: pan-y pinch-zoom;
     height: 100vh;
     padding: 0;
+    position: fixed;
+    width: 100%;
   }
 
   /* Hide unnecessary elements on mobile */
@@ -993,29 +995,35 @@ p {
     margin: 0 auto;
     /* Optimize for mobile performance */
     will-change: transform;
-    transform: translate3d(0, 0, 0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    /* Allow touch actions on paper */
-    touch-action: none;
     /* Improve touch response */
     -webkit-tap-highlight-color: transparent;
     user-select: none;
+    /* Enable touch actions but prevent scrolling */
+    touch-action: none;
+    /* Ensure GPU acceleration */
+    transform: translate3d(0, 0, 0);
+    /* Prevent iOS highlighting */
+    -webkit-touch-callout: none;
+    /* Improve touch precision */
+    cursor: grab;
   }
 
-  /* Initial positions for papers - use translate3d for better performance */
-  .paper:nth-child(1) { top: 5%; left: 50%; transform: translate3d(-50%, 0, 0) !important; }
-  .paper:nth-child(2) { top: 15%; left: 50%; transform: translate3d(-50%, 0, 0) !important; }
-  .paper:nth-child(3) { top: 25%; left: 50%; transform: translate3d(-50%, 0, 0) !important; }
-  .paper:nth-child(4) { top: 35%; left: 50%; transform: translate3d(-50%, 0, 0) !important; }
-  .paper:nth-child(5) { top: 45%; left: 50%; transform: translate3d(-50%, 0, 0) !important; }
-  .paper:nth-child(6) { top: 55%; left: 50%; transform: translate3d(-50%, 0, 0) !important; }
-  .paper:nth-child(7) { top: 65%; left: 50%; transform: translate3d(-50%, 0, 0) !important; }
+  /* Initial positions for papers */
+  .paper:nth-child(1) { top: 5%; left: 50%; transform: translate3d(-50%, 0, 0); }
+  .paper:nth-child(2) { top: 15%; left: 50%; transform: translate3d(-50%, 0, 0); }
+  .paper:nth-child(3) { top: 25%; left: 50%; transform: translate3d(-50%, 0, 0); }
+  .paper:nth-child(4) { top: 35%; left: 50%; transform: translate3d(-50%, 0, 0); }
+  .paper:nth-child(5) { top: 45%; left: 50%; transform: translate3d(-50%, 0, 0); }
+  .paper:nth-child(6) { top: 55%; left: 50%; transform: translate3d(-50%, 0, 0); }
+  .paper:nth-child(7) { top: 65%; left: 50%; transform: translate3d(-50%, 0, 0); }
 
-  /* Improve touch feedback */
+  /* Active dragging state */
   .paper.moved {
     z-index: 10;
-    transition: transform 0.1s ease-out;
+    transition: none !important;
+    cursor: grabbing;
   }
 
   /* Optimize video and image rendering */
@@ -1026,12 +1034,29 @@ p {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     transform: translate3d(0, 0, 0);
+    pointer-events: none;
   }
 
   /* Fix iOS momentum scrolling */
   .paper.scrollable {
     -webkit-overflow-scrolling: touch;
     overflow-y: auto;
+  }
+
+  /* Prevent text selection during drag */
+  .paper * {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -webkit-touch-callout: none !important;
+    pointer-events: none !important;
+  }
+
+  /* Allow interaction with specific elements */
+  .paper button,
+  .paper a,
+  .paper input,
+  .paper textarea {
+    pointer-events: auto !important;
   }
 }
 

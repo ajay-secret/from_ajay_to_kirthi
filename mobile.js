@@ -154,17 +154,25 @@ class Paper {
     const paperRect = paper.getBoundingClientRect();
     const padding = this.isMobile ? 10 : 20;
     
+    // Calculate boundaries with initial position offset
+    const initialLeft = paperRect.width / 2;
+    const maxX = viewportWidth - paperRect.width + initialLeft - padding;
+    const minX = -initialLeft + padding;
+    
     this.currentPaperX = Math.max(
-      -paperRect.width + padding,
-      Math.min(viewportWidth - padding, this.currentPaperX)
+      minX,
+      Math.min(maxX, this.currentPaperX)
     );
     this.currentPaperY = Math.max(
       padding,
-      Math.min(viewportHeight - padding, this.currentPaperY)
+      Math.min(viewportHeight - paperRect.height - padding, this.currentPaperY)
     );
     
-    const transform = `translate3d(${this.currentPaperX}px, ${this.currentPaperY}px, 0)`;
-    paper.style.transform = transform;
+    // Apply transform without interfering with initial position
+    const baseTransform = window.getComputedStyle(paper).transform;
+    const initialTransform = baseTransform === 'none' ? '' : baseTransform;
+    
+    paper.style.transform = `${initialTransform} translate3d(${this.currentPaperX}px, ${this.currentPaperY}px, 0)`;
   }
 }
 
@@ -178,21 +186,23 @@ document.addEventListener("DOMContentLoaded", () => {
   
   if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
     document.body.style.overscrollBehavior = 'none';
-    document.body.style.touchAction = 'none';
     
-    // Prevent zoom on double tap
+    // Only prevent zoom gestures
     document.addEventListener('touchstart', (e) => {
       if (e.touches.length > 1) {
         e.preventDefault();
       }
     }, { passive: false });
     
-    // Prevent default touch behaviors except for inputs
-    document.addEventListener('touchmove', (e) => {
-      if (!e.target.matches('input, textarea')) {
-        e.preventDefault();
-      }
-    }, { passive: false });
+    // Allow scrolling on the body
+    document.body.style.touchAction = 'pan-y pinch-zoom';
+    
+    // Prevent pull-to-refresh
+    document.body.style.overscrollBehavior = 'none';
+    
+    // Prevent text selection during touch
+    document.body.style.webkitUserSelect = 'none';
+    document.body.style.userSelect = 'none';
   }
 });
 
