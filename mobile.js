@@ -58,6 +58,7 @@ class Paper {
       });
     } else {
       paper.addEventListener('touchstart', (e) => {
+        e.preventDefault();
         if (this.holdingPaper) return;
         
         const touch = e.touches[0];
@@ -84,20 +85,19 @@ class Paper {
         
         paper.style.transition = 'none';
         paper.classList.add('moved');
-      });
+      }, { passive: false });
 
       paper.addEventListener('touchmove', (e) => {
-        if (!this.holdingPaper) return;
         e.preventDefault();
+        if (!this.holdingPaper) return;
         
         const touch = e.touches[0];
         
         this.touchMoveX = touch.clientX;
         this.touchMoveY = touch.clientY;
         
-        const sensitivity = 1;
-        this.velX = (this.touchMoveX - this.prevTouchX) * sensitivity;
-        this.velY = (this.touchMoveY - this.prevTouchY) * sensitivity;
+        this.velX = this.touchMoveX - this.prevTouchX;
+        this.velY = this.touchMoveY - this.prevTouchY;
         
         this.currentPaperX += this.velX;
         this.currentPaperY += this.velY;
@@ -105,14 +105,26 @@ class Paper {
         this.prevTouchX = this.touchMoveX;
         this.prevTouchY = this.touchMoveY;
         
-        this.updateTransform(paper);
-      });
+        requestAnimationFrame(() => {
+          this.updateTransform(paper);
+        });
+      }, { passive: false });
 
-      paper.addEventListener('touchend', () => {
-        this.holdingPaper = false;
-        this.rotating = false;
-        paper.style.transition = 'transform 0.2s ease-out';
-      });
+      document.addEventListener('touchend', () => {
+        if (this.holdingPaper) {
+          this.holdingPaper = false;
+          this.rotating = false;
+          paper.style.transition = 'transform 0.2s ease-out';
+        }
+      }, { passive: false });
+
+      document.addEventListener('touchcancel', () => {
+        if (this.holdingPaper) {
+          this.holdingPaper = false;
+          this.rotating = false;
+          paper.style.transition = 'transform 0.2s ease-out';
+        }
+      }, { passive: false });
     }
   }
 
@@ -128,7 +140,7 @@ class Paper {
     );
     this.currentPaperY = Math.max(
       padding,
-      Math.min(viewportHeight - paperRect.height - padding, this.currentPaperY)
+      Math.min(viewportHeight - padding, this.currentPaperY)
     );
     
     paper.style.transform = `translate3d(${this.currentPaperX}px, ${this.currentPaperY}px, 0)`;
@@ -145,6 +157,9 @@ document.addEventListener("DOMContentLoaded", () => {
   
   if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
     document.body.style.overscrollBehavior = 'none';
+    document.body.style.touchAction = 'none';
+    
+    // Prevent default touch behaviors
     document.addEventListener('touchmove', (e) => {
       if (e.touches.length > 1) e.preventDefault();
     }, { passive: false });

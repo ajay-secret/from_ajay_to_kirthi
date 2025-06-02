@@ -1411,15 +1411,21 @@ p {
     overflow-x: hidden;
     overflow-y: auto;
     perspective: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .book {
+    position: relative;
     width: 90vw;
     height: auto;
     max-width: 600px;
     aspect-ratio: 847/654.5;
-    transform: translate(-50%, -50%) rotatex(10deg) rotatey(-10deg) scale(0.8);
-    margin: 20vh auto;
+    transform: rotatex(10deg) rotatey(-10deg) scale(0.8);
+    margin: 0;
+    top: 0;
+    left: 0;
   }
 
   .page {
@@ -1427,39 +1433,69 @@ p {
     max-width: 300px;
     height: auto;
     aspect-ratio: 423.5/654.5;
-    font-size: calc(14px + 0.5vw);
-    line-height: 1.5;
-    overflow-y: visible;
+    font-size: calc(12px + 0.3vw);
+    line-height: 1.4;
+    overflow: hidden;
+    padding: 15px;
+    word-wrap: break-word;
   }
 
   .page img {
     max-width: 100%;
     height: auto;
     object-fit: contain;
+    margin: 10px auto;
   }
 
   p {
     margin-bottom: 1em;
     font-size: inherit;
+    max-width: 100%;
+    overflow-wrap: break-word;
   }
 
   .instruction {
+    position: fixed;
     width: 90%;
     max-width: 400px;
     text-align: center;
-    font-size: calc(12px + 0.5vw);
+    font-size: calc(12px + 0.3vw);
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+  }
+
+  .cover-front:nth-child(1) h1 {
+    font-size: calc(24px + 1vw);
+    margin-top: 15px;
+  }
+
+  .cover-front:nth-child(1) h2 {
+    font-size: calc(16px + 0.5vw);
+    top: 30%;
+  }
+
+  .cover-front:nth-child(1) .hat {
+    font-size: calc(50px + 2vw);
   }
 }
 
 @media (max-width: 600px) {
   .book {
-    transform: translate(-50%, -50%) rotatex(10deg) rotatey(-10deg) scale(0.6);
-    margin: 30vh auto;
+    transform: rotatex(10deg) rotatey(-10deg) scale(0.6);
+    margin: 0;
   }
 
   body {
-    height: auto;
+    height: 100vh;
     min-height: 100vh;
+    padding: 20px 0;
+  }
+
+  .page {
+    font-size: calc(11px + 0.3vw);
+    padding: 12px;
   }
 }
 
