@@ -970,12 +970,12 @@ p {
 @media screen and (max-width: 768px) {
   body {
     overflow-x: hidden;
-    /* Allow default touch actions on body */
-    touch-action: pan-y pinch-zoom;
     height: 100vh;
     padding: 0;
     position: fixed;
     width: 100%;
+    /* Simplified background for better performance */
+    background: #f0f2ff;
   }
 
   /* Hide unnecessary elements on mobile */
@@ -984,7 +984,10 @@ p {
   .timestamp,
   .page-counter,
   .custom-cursor,
-  .page-indicators {
+  .page-indicators,
+  .particles,
+  .hint-overlay,
+  .loading-overlay {
     display: none !important;
   }
 
@@ -993,84 +996,65 @@ p {
     width: 85vw;
     max-width: 300px;
     margin: 0 auto;
-    /* Optimize for mobile performance */
-    will-change: transform;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    /* Improve touch response */
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 15px;
+    /* Minimal transform properties */
+    transform: translate(-50%, 0);
+    /* Essential touch properties */
+    touch-action: none;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
-    /* Enable touch actions but prevent scrolling */
-    touch-action: none;
-    /* Ensure GPU acceleration */
-    transform: translate3d(0, 0, 0);
-    /* Prevent iOS highlighting */
-    -webkit-touch-callout: none;
-    /* Improve touch precision */
-    cursor: grab;
   }
 
-  /* Initial positions for papers */
-  .paper:nth-child(1) { top: 5%; left: 50%; transform: translate3d(-50%, 0, 0); }
-  .paper:nth-child(2) { top: 15%; left: 50%; transform: translate3d(-50%, 0, 0); }
-  .paper:nth-child(3) { top: 25%; left: 50%; transform: translate3d(-50%, 0, 0); }
-  .paper:nth-child(4) { top: 35%; left: 50%; transform: translate3d(-50%, 0, 0); }
-  .paper:nth-child(5) { top: 45%; left: 50%; transform: translate3d(-50%, 0, 0); }
-  .paper:nth-child(6) { top: 55%; left: 50%; transform: translate3d(-50%, 0, 0); }
-  .paper:nth-child(7) { top: 65%; left: 50%; transform: translate3d(-50%, 0, 0); }
+  /* Simplified initial positions */
+  .paper:nth-child(1) { top: 5%; left: 50%; }
+  .paper:nth-child(2) { top: 15%; left: 50%; }
+  .paper:nth-child(3) { top: 25%; left: 50%; }
+  .paper:nth-child(4) { top: 35%; left: 50%; }
+  .paper:nth-child(5) { top: 45%; left: 50%; }
+  .paper:nth-child(6) { top: 55%; left: 50%; }
+  .paper:nth-child(7) { top: 65%; left: 50%; }
 
-  /* Active dragging state */
+  /* Simplified active state */
   .paper.moved {
-    z-index: 10;
-    transition: none !important;
-    cursor: grabbing;
+    z-index: 2;
   }
 
-  /* Optimize video and image rendering */
-  .paper video,
+  /* Optimize images */
   .paper img {
     width: 100%;
     height: auto;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    transform: translate3d(0, 0, 0);
-    pointer-events: none;
+    border-radius: 4px;
   }
 
-  /* Fix iOS momentum scrolling */
-  .paper.scrollable {
-    -webkit-overflow-scrolling: touch;
-    overflow-y: auto;
-  }
-
-  /* Prevent text selection during drag */
-  .paper * {
-    user-select: none !important;
-    -webkit-user-select: none !important;
-    -webkit-touch-callout: none !important;
-    pointer-events: none !important;
-  }
-
-  /* Allow interaction with specific elements */
-  .paper button,
-  .paper a,
-  .paper input,
-  .paper textarea {
-    pointer-events: auto !important;
+  /* Simplified button style */
+  #openBookBtn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    border: none;
+    color: #333;
+    z-index: 3;
   }
 }
 
-/* Fix for iOS Safari bottom bar and notch */
+/* iOS specific optimizations */
 @supports (-webkit-touch-callout: none) {
   body {
     height: -webkit-fill-available;
-    /* Add padding for notch */
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
   }
   
   #openBookBtn {
-    bottom: calc(40px + env(safe-area-inset-bottom));
+    bottom: calc(20px + env(safe-area-inset-bottom));
   }
 }
 
@@ -1079,13 +1063,6 @@ p {
   .paper {
     width: 90vw;
     padding: 10px;
-  }
-
-  #openBookBtn {
-    min-width: 180px;
-    padding: 12px 24px;
-    font-size: 14px;
-    bottom: 15px;
   }
 }
 
