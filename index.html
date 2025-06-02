@@ -33,7 +33,7 @@
   <!-- Particle container -->
   <div class="particles" id="particles"></div>
 
-  <!-- Page navigation -->
+  <!-- Hidden elements for desktop -->
   <div class="page-indicators"></div>
   <div class="page-counter">
     <span id="currentPage">1</span>/<span id="totalPages">7</span>
@@ -61,61 +61,61 @@
   <!-- Timestamp -->
   <div class="timestamp" id="timestamp"></div>
 
-  <!-- Papers -->
-  <div class="paper video-layer">
-    <video id="paperVideo" width="300" height="200" controls>
-        <source src="images/video.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-  </div>
-  <div class="paper video-layer">
-    <img src="images/main/7.png" />
-  </div>
-  <div class="paper video-layer">
-    <img src="images/4.png" />
-  </div>
+  <!-- Papers Container -->
+  <div class="papers-container">
+    <!-- Papers -->
+    <div class="paper video-layer">
+      <video id="paperVideo" width="300" height="200" controls>
+          <source src="images/video.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+      </video>
+    </div>
+    <div class="paper video-layer">
+      <img src="images/main/7.png" />
+    </div>
+    <div class="paper video-layer">
+      <img src="images/4.png" />
+    </div>
 
-  <div class="paper heart">
-    <img src="images/heart.webp" alt="Heart" />
+    <div class="paper heart">
+      <img src="images/heart.webp" alt="Heart" />
+    </div>
+    <div class="paper image">
+      <p><img src="images/main/6.png" /></p>
+      
+      <img src="images/photo/3.PNG" />
+    </div>
+    <div class="paper image">
+      <p><img src="images/main/5.png" /></p>
+      <img src="images/photo/2.PNG" />
+    </div>
+    <div class="paper image">
+      <p><img src="images/main/4.png" /></p>
+      <img src="images/photo/1.PNG" />
+    </div>
+    <div class="paper red">
+      <p class="p1"><img src="images/main/3.png" /></p>
+    </div>
+    <div class="paper">
+      <p class="p1"><img src="images/main/2.png" /></p>
+     
+    </div>
+    <div class="paper">
+      <p class="p1"><img src="images/main/1.png" /></p>
+    </div>
   </div>
-  <div class="paper image">
-    <p><img src="images/main/6.png" /></p>
-    
-    <img src="images/photo/3.PNG" />
-  </div>
-  <div class="paper image">
-    <p><img src="images/main/5.png" /></p>
-    <img src="images/photo/2.PNG" />
-  </div>
-  <div class="paper image">
-    <p><img src="images/main/4.png" /></p>
-    <img src="images/photo/1.PNG" />
-  </div>
-  <div class="paper red">
-    <p class="p1"><img src="images/main/3.png" /></p>
-  </div>
-  <div class="paper">
-    <p class="p1"><img src="images/main/2.png" /></p>
-   
-  </div>
-  <div class="paper">
-    <p class="p1"><img src="images/main/1.png" /></p>
-  </div>
-  <!-- Video Play Button -->
-  
-
 
   <!-- Hidden Video -->
   <div id="videoContainer" style="display: none;">
     <video id="backgroundVideo" src="images/video.mp4"></video>
-</div>
-<button id="playVideoBtn">Play Video</button>
-<button id="openBookBtn">
-  <span>Open Book</span>
-</button>
+  </div>
 
+  <!-- Buttons -->
+  <button id="playVideoBtn">Play Video</button>
+  <button id="openBookBtn">
+    <span>Open Book</span>
+  </button>
 
-  
   <!-- JavaScript -->
   <script src="mobile.js"></script>
   <script>
