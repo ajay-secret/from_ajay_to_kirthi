@@ -1408,12 +1408,12 @@ p {
     min-height: unset;
     width: 100%;
     height: 100vh;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
     perspective: 1200px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 0;
     margin: 0;
   }
@@ -1425,9 +1425,7 @@ p {
     height: auto;
     max-width: none;
     transform: rotatex(10deg) rotatey(-10deg) scale(0.9);
-    margin: 0;
-    top: 0;
-    left: 0;
+    margin-top: 10vh;
   }
 
   .page {
@@ -1435,32 +1433,33 @@ p {
     aspect-ratio: 423.5/654.5;
     height: auto;
     max-width: none;
-    font-size: calc(12px + 0.3vw);
-    line-height: 1.4;
+    font-size: calc(11px + 0.3vw);
+    line-height: 1.3;
     overflow: hidden;
-    padding: 15px;
+    padding: 20px;
     word-wrap: break-word;
     display: flex;
     flex-direction: column;
   }
 
   .page img {
-    width: calc(100% + 30px) !important; /* Account for padding */
+    width: calc(100% - 20px) !important;
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
-    object-fit: fill !important;
-    margin: -15px !important; /* Negative margin to counter padding */
+    object-fit: contain !important;
+    margin: 10px auto !important;
     padding: 0 !important;
     flex: 1;
     transform: none !important;
   }
 
   p {
-    margin-bottom: 1em;
+    margin-bottom: 0.8em;
     font-size: inherit;
     max-width: 100%;
     overflow-wrap: break-word;
+    font-size: clamp(10px, 2.5vw, 14px);
   }
 
   .instruction {
@@ -1468,17 +1467,32 @@ p {
   }
 
   .cover-front:nth-child(1) h1 {
-    font-size: calc(24px + 1vw);
+    font-size: clamp(20px, 5vw, 28px);
     margin-top: 15px;
   }
 
   .cover-front:nth-child(1) h2 {
-    font-size: calc(16px + 0.5vw);
+    font-size: clamp(14px, 3vw, 20px);
     top: 30%;
   }
 
   .cover-front:nth-child(1) .hat {
-    font-size: calc(50px + 2vw);
+    font-size: clamp(40px, 8vw, 60px);
+  }
+
+  .page-counter {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: clamp(12px, 2.5vw, 14px);
+    z-index: 1000;
+    width: auto;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -1488,19 +1502,32 @@ p {
     aspect-ratio: 847/654.5;
     height: auto;
     transform: rotatex(10deg) rotatey(-10deg) scale(0.7);
+    margin-top: 8vh;
   }
 
   .page {
     width: 49vw;
     aspect-ratio: 423.5/654.5;
     height: auto;
-    font-size: calc(11px + 0.3vw);
-    padding: 10px;
+    font-size: calc(10px + 0.3vw);
+    padding: 15px;
   }
 
   .page img {
-    width: calc(100% + 20px) !important; /* Account for smaller padding */
-    margin: -10px !important;
+    width: calc(100% - 16px) !important;
+    margin: 8px auto !important;
+  }
+
+  p {
+    font-size: clamp(9px, 2.2vw, 12px);
+    line-height: 1.2;
+    margin-bottom: 0.6em;
+  }
+
+  .page-counter {
+    bottom: 5px;
+    padding: 4px 12px;
+    font-size: clamp(10px, 2.2vw, 12px);
   }
 }
 
