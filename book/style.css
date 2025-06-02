@@ -1420,18 +1420,18 @@ p {
 
   .book {
     position: absolute;
-    width: 85vw;
-    height: 82vh;
+    width: 90vw;
+    height: 80vh;
     max-width: none;
-    top: 2vh;
+    top: 5vh;
     left: 50%;
     transform-origin: center;
     transform: translateX(-50%) rotatex(10deg) rotatey(-10deg) scale(0.95);
   }
 
   .page {
-    width: 42.5vw;
-    height: 82vh;
+    width: 45vw;
+    height: 80vh;
     max-width: none;
     font-size: calc(11px + 0.3vw);
     line-height: 1.3;
@@ -1463,15 +1463,16 @@ p {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     padding: 20px;
+    position: relative;
   }
 
   .cover-front:nth-child(1) img {
-    width: 85% !important;
-    height: 70% !important;
+    width: 80% !important;
+    height: 65% !important;
     object-fit: fill !important;
-    margin: 10% auto !important;
+    margin: auto !important;
     display: block;
     position: relative;
     z-index: 1;
@@ -1505,7 +1506,7 @@ p {
 
   .page-counter {
     position: fixed;
-    bottom: 15vh;
+    bottom: 25vh;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(255, 255, 255, 0.9);
@@ -1521,15 +1522,15 @@ p {
 
 @media (max-width: 600px) {
   .book {
-    width: 92vw;
-    height: 85vh;
-    top: 1vh;
-    transform: translateX(-50%) rotatex(10deg) rotatey(-10deg) scale(0.8);
+    width: 95vw;
+    height: 82vh;
+    top: 4vh;
+    transform: translateX(-50%) rotatex(10deg) rotatey(-10deg) scale(0.85);
   }
 
   .page {
-    width: 46vw;
-    height: 85vh;
+    width: 47.5vw;
+    height: 82vh;
     font-size: calc(10px + 0.3vw);
     padding: 15px;
   }
@@ -1549,13 +1550,12 @@ p {
   }
 
   .cover-front:nth-child(1) img {
-    width: 88% !important;
-    height: 75% !important;
-    margin: 8% auto !important;
+    width: 82% !important;
+    height: 68% !important;
   }
 
   .page-counter {
-    bottom: 12vh;
+    bottom: 22vh;
     padding: 4px 12px;
     font-size: clamp(10px, 2.2vw, 12px);
   }
